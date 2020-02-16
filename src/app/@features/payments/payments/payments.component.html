@@ -1,1 +1,45 @@
-<p>payments works!</p>
+<div class="payments">
+  <div class="payments__code">
+    <span class="payments__text">
+      <span class="payments__text--gray">YOUR CODE NOW:</span>
+      <span class="payments__value">{{ gridGeneratorService.occurrences$ | async }}</span>
+    </span>
+  </div>
+
+  <form [formGroup]="contactForm" class="payments__inputs" (ngSubmit)="incrementPay()" novalidate>
+    <div>
+      <label class="payments--block payments__label">PAYMENT</label>
+      <input formControlName="payment" class="payments--block payments__input" type="text" name="Payment" placeholder="Payment">
+    </div>
+    <div class="payments__amount-input">
+      <label class="payments--block payments__label">AMOUNT</label>
+      <input formControlName="amount" class="payments--block payments__input" type="number" name="Amount" placeholder="Amount">
+    </div>
+    <div class="payments__add-button">
+      <button class="payments__button" [disabled]="disabled" type="submit">+ ADD</button>
+    </div>
+  </form>
+
+  <div class="payments__container">
+    <div class="payments__payment-input">
+      <label class="payments--block payments__label">PAYMENT LIST</label>
+    </div>
+
+    <table class="payments__table">
+      <tr>
+        <th class="payments--width">Name</th>
+        <th>Amount</th>
+        <th>Code</th>
+        <th>Grid</th>
+      </tr>
+      <tr *ngFor="let pay of paymentsService.payments$ | async">
+        <td>{{ pay.name }}</td>
+        <td>{{ pay.amount }}</td>
+        <td>{{ pay.code }}</td>
+        <!-- the grid is always 100 cells -->
+        <td>100</td>
+      </tr>
+    </table>
+
+  </div>
+</div>

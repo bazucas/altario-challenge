@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
+  ElementRef, OnInit,
   ViewChild
 } from '@angular/core';
 import {GridGeneratorService} from '../../../@core/services/grid-generator.service';
@@ -11,12 +11,16 @@ import {GridGeneratorService} from '../../../@core/services/grid-generator.servi
   templateUrl: './generator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GeneratorComponent {
+export class GeneratorComponent implements OnInit {
   @ViewChild('input', { static: false }) public input: ElementRef | undefined;
-  public disabled = true;
+  public disabled = false;
 
   constructor(
     public gridGeneratorService: GridGeneratorService) { }
+
+  public ngOnInit(): void {
+    this.disabled = !this.gridGeneratorService.initialized;
+  }
 
   public trackByFn(index: number) {
     return index;

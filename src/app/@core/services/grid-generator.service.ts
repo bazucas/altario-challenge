@@ -12,7 +12,6 @@ export class GridGeneratorService {
   private occurrences: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private letter: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public initialized = false;
-
   public letter$: Observable<string> = this.letter.asObservable();
   public time$: Observable<string> = this.time.asObservable();
   public grid$: Observable<string[][]> = this.grid.asObservable();
