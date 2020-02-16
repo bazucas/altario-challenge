@@ -1,0 +1,14 @@
+/************ MIXINS *************/
+@import 'globals/mixins';
+
+/************ ELEMENTS *************/
+@import 'elements/buttons';
+
+/************ VARIABLES *************/
+@import 'elements/variables';
+
+/************ COMPONENTS *************/
+@import "components/root";
+@import "components/generator";
+@import "components/payments";
+@import "components/not-found";
