@@ -1,0 +1,32 @@
+<div class="generator">
+
+  <div class="generator__inputs">
+    <div>
+      <label class="generator--block generator__label" for="character">CHARACTER</label>
+      <input #input [disabled]="disabled" class="generator--block generator__input" (keyup)="updateGrid()"
+             type="text" name="Character" id="character" placeholder="Character" [value]="gridGeneratorService.letter$ | async">
+    </div>
+    <div class="generator__clock">
+      <span>{{ gridGeneratorService.time$ | async }}</span>
+    </div>
+    <div class="generator__add-button">
+      <button class="generator__button" type="button" (click)="generateGrid()">GENERATE 2D GRID</button>
+    </div>
+  </div>
+
+  <table class="generator__table">
+    <tr *ngFor="let row of gridGeneratorService.grid$ | async; trackBy: trackByFn">
+      <td class="generator__tenth-width" *ngFor="let column of row; trackBy: trackByFn">{{column}}</td>
+    </tr>
+  </table>
+
+
+  <div class="generator__code">
+    <span class="generator__text">
+      <span class="generator__text--gray">YOUR CODE NOW:</span>
+      <span class="generator__value">{{ gridGeneratorService.occurrences$ | async }}</span>
+    </span>
+  </div>
+</div>
+
+
