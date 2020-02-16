@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {GridGeneratorService} from '../../../@core/services/grid-generator.service';
+import {GeneratorService} from '../../../@core/services/generator.service';
 import {PaymentsService} from '../../../@core/services/payments.service';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -20,16 +20,16 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   public disabled = false;
 
   constructor(
-    public gridGeneratorService: GridGeneratorService,
+    public generatorService: GeneratorService,
     public paymentsService: PaymentsService) { }
 
   public ngOnInit(): void {
-    this.gridGeneratorService.grid$
+    this.generatorService.grid$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(grid => {
         this.grid = grid;
       });
-    this.gridGeneratorService.occurrences$
+    this.generatorService.occurrences$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(code => {
         this.code = code;
@@ -59,6 +59,10 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     };
     this.paymentsService.addPayment(pay);
     this.disableButton();
+  }
+
+  public trackByFn(index: number) {
+    return index;
   }
 
   private disableButton(): void {

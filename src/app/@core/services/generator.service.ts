@@ -1,16 +1,20 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {Injectable, OnDestroy} from '@angular/core';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GridGeneratorService {
+export class GeneratorService implements OnDestroy {
 
   constructor() { }
   private time: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private grid: BehaviorSubject<string[][]> = new BehaviorSubject<[]>(null);
   private occurrences: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private letter: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private unsubscribe: Subject<void> = new Subject<void>();
+
+  public inputDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public initialized = false;
   public letter$: Observable<string> = this.letter.asObservable();
   public time$: Observable<string> = this.time.asObservable();
@@ -30,6 +34,11 @@ export class GridGeneratorService {
     return Math.floor(Math.random() * size);
   }
 
+  public ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+  }
+
   public startGenerator(): void {
     this.initialized = true;
     setInterval( () => {
@@ -43,6 +52,13 @@ export class GridGeneratorService {
       this.grid.next(grid);
       this.getOccurrences();
     }, 2000);
+    this.inputDisabled
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(inputDisabled => {
+        if (inputDisabled) {
+          setTimeout(() => this.inputDisabled.next(false), 4000);
+        }
+      });
   }
 
   public setLetter(letter?: string): void {
@@ -59,7 +75,7 @@ export class GridGeneratorService {
         let index;
         // if letter not set, generate random index and continue
         if (!letter || letter === '') {
-          index = GridGeneratorService.getIndex(26);
+          index = GeneratorService.getIndex(26);
           grid[i][j] = this.letterArray[index];
         } else {
           // if letter is set, create an entire grid without that letter, and then
@@ -67,7 +83,7 @@ export class GridGeneratorService {
           const originalIndex = this.letterArray.indexOf(letter);
           do {
             // repeat until the new index is different from the selected letter index
-            index = GridGeneratorService.getIndex(26);
+            index = GeneratorService.getIndex(26);
           } while (originalIndex === index);
           grid[i][j] = this.letterArray[index];
         }
@@ -76,7 +92,7 @@ export class GridGeneratorService {
     if (letter && letter !== '') {
       // choose 20 random not repeated indexes to create a grid with 20% chosen letter occupancy
       while (indexes.length < 20) {
-        const newIndex: [number, number] = [GridGeneratorService.getIndex(10), GridGeneratorService.getIndex(10)];
+        const newIndex: [number, number] = [GeneratorService.getIndex(10), GeneratorService.getIndex(10)];
         if (!indexes.some(i => i[0].toString() + i[1].toString() === newIndex[0].toString() + newIndex[1].toString())) {
           indexes.push(newIndex);
         }
@@ -103,6 +119,6 @@ export class GridGeneratorService {
         sum += filteredRows.reduce((acc: string, item: string) => acc + item).length;
       }
     });
-    return GridGeneratorService.testIfBiggerThanNine(sum);
+    return GeneratorService.testIfBiggerThanNine(sum);
   }
 }

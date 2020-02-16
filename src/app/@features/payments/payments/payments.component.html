@@ -2,7 +2,7 @@
   <div class="payments__code">
     <span class="payments__text">
       <span class="payments__text--gray">YOUR CODE NOW:</span>
-      <span class="payments__value">{{ gridGeneratorService.occurrences$ | async }}</span>
+      <span class="payments__value">{{ generatorService.occurrences$ | async }}</span>
     </span>
   </div>
 
@@ -32,11 +32,12 @@
         <th>Code</th>
         <th>Grid</th>
       </tr>
-      <tr *ngFor="let pay of paymentsService.payments$ | async">
+      <tr *ngFor="let pay of paymentsService.payments$ | async; trackBy: trackByFn">
         <td>{{ pay.name }}</td>
         <td>{{ pay.amount }}</td>
         <td>{{ pay.code }}</td>
         <!-- the grid is always 100 cells -->
+        <!-- although, I store the real 10x10 grid in the object -->
         <td>100</td>
       </tr>
     </table>

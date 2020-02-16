@@ -4,7 +4,7 @@ import {
   ElementRef, OnInit,
   ViewChild
 } from '@angular/core';
-import {GridGeneratorService} from '../../../@core/services/grid-generator.service';
+import {GeneratorService} from '../../../@core/services/generator.service';
 
 @Component({
   selector: 'app-generator',
@@ -13,13 +13,12 @@ import {GridGeneratorService} from '../../../@core/services/grid-generator.servi
 })
 export class GeneratorComponent implements OnInit {
   @ViewChild('input', { static: false }) public input: ElementRef | undefined;
-  public disabled = false;
 
   constructor(
-    public gridGeneratorService: GridGeneratorService) { }
+    public generatorService: GeneratorService) { }
 
   public ngOnInit(): void {
-    this.disabled = !this.gridGeneratorService.initialized;
+    this.generatorService.inputDisabled.next(true);
   }
 
   public trackByFn(index: number) {
@@ -27,16 +26,15 @@ export class GeneratorComponent implements OnInit {
   }
 
   public generateGrid(): void {
-    this.disabled = false;
-    if (!this.gridGeneratorService.initialized) {
-      this.gridGeneratorService.startGenerator();
+    this.generatorService.inputDisabled.next(false);
+    if (!this.generatorService.initialized) {
+      this.generatorService.startGenerator();
     }
-    this.gridGeneratorService.setLetter(this.input.nativeElement.value);
+    this.generatorService.setLetter(this.input.nativeElement.value);
   }
 
   public updateGrid(): void {
-    this.disabled = true;
-    this.gridGeneratorService.setLetter(this.input.nativeElement.value);
-    setTimeout(() => this.disabled = false, 4000);
+    this.generatorService.setLetter(this.input.nativeElement.value);
+    this.generatorService.inputDisabled.next(true);
   }
 }
