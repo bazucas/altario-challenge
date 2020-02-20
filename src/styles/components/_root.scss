@@ -1,0 +1,7 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+.altar {
+  @include center();
+  height: 50px;
+}
